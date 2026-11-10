@@ -1,9 +1,37 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/client.js';
+import LazyBackground from './LazyBackground.jsx';
+import { useRipple } from '../hooks/useRipple.js';
 
+const FOOTER_MENU = [
+  { label: 'Trang chủ', to: '/' },
+  { label: 'Giới thiệu', to: '/gioi-thieu' },
+  { label: 'Dịch vụ', to: '/dich-vu' },
+  { label: 'Bảng giá', to: '/bang-gia' },
+  { label: 'Album ảnh', to: '/album-anh' },
+  { label: 'Đào tạo', to: '/dao-tao' },
+  { label: 'Liên hệ', to: '/lien-he' },
+];
+
+const POLICIES = [
+  { label: 'Chính sách hỗ trợ', to: '/chinh-sach-ho-tro' },
+  { label: 'Chính sách thanh toán', to: '/chinh-sach-thanh-toan' },
+  { label: 'Chính sách hướng dẫn', to: '/chinh-sach-huong-dan' },
+  { label: 'Chính sách bảo hành', to: '/chinh-sach-bao-hanh' },
+  { label: 'Chính sách dịch vụ', to: '/chinh-sach-dich-vu' },
+];
+
+const MAP_SRC =
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4541.310265555282!2d106.67502277566014!3d10.827103189324765!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175290008d54311%3A0x5901d51929d43331!2smi%20house%20Spa!5e1!3m2!1svi!2s!4v1789012090576!5m2!1svi!2s';
+
+/**
+ * Footer — 100% replica của footer trên http://mihousespa.com/
+ * Gồm footer__group (bg), footer__article (5 cột), footer__powered, footer__map.
+ */
 export default function Footer() {
   const [settings, setSettings] = useState(null);
+  const ripple = useRipple();
 
   useEffect(() => {
     let alive = true;
@@ -18,104 +46,168 @@ export default function Footer() {
     };
   }, []);
 
-  const phone = settings?.hotline || settings?.phone || '';
+  const photos = settings?.photos || [];
+  const logo =
+    photos.find((p) => p.type === 'logo' || p.menu === 'logo')?.url ||
+    photos.find((p) => p.type === 'logo' || p.menu === 'logo')?.photo ||
+    '/upload/photo/2026/09/18/99cc7455-142a-44ff-8b8d-2e4b90c81c10-removebg-preview-1789700957.webp';
+
+  const socials = photos.filter((p) => p.type === 'mang-xa-hoi' || p.menu === 'mang-xa-hoi');
+
+  const address = settings?.address || '43 đường Quang Trung, phường Gò Vấp, Thành Phố Hồ Chí Minh';
+  const hotline = settings?.hotline || settings?.phone || '0767882407';
+  const email = settings?.email || 'nguyenquynhdiem1988@gmail.com';
 
   return (
-    <footer className="mt-20 bg-ink-900 text-ink-300">
-      <div className="container-site grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-white">
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path d="M12 3c0 3-3 3.5-3 7a3 3 0 0 0 6 0c0-3.5-3-4-3-7Z" />
-                <path d="M12 21c4-2 7-5 7-9a7 7 0 1 0-14 0c0 4 3 7 7 9Z" opacity=".5" />
-              </svg>
-            </span>
-            <span className="leading-tight">
-              <span className="block font-serif text-lg font-semibold text-white">Mi House</span>
-              <span className="block text-[10px] uppercase tracking-[0.25em] text-brand-400">Spa &amp; Wellness</span>
-            </span>
+    <footer className="footer" id="footer-primary">
+      <LazyBackground className="footer__group" image="/assets/images/footer-bg.jpg" options="center / cover no-repeat">
+        <section className="footer__article py:60">
+          <div className="wrap-content">
+            <div className="footer__article-list">
+              <div className="footer__article-item">
+                <figure className="logo footer__logo">
+                  <Link className="logo__photo ripple" to="/" onClick={ripple}>
+                    <img src={logo} alt="Mi House Spa" width="140" height="140" />
+                  </Link>
+                </figure>
+                <h2 className="footer__name">Mi House Spa</h2>
+                <p className="footer__desc">Gội đầu dưỡng sinh - Massage body - Nail</p>
+              </div>
+
+              <div className="footer__article-item">
+                <div className="footer__info">
+                  <h2 className="footer__title">Thông tin liên hệ</h2>
+                  <address className="footer__content ck-editor">
+                    <p>Địa Chỉ: {address}</p>
+                    <p>
+                      Hotline: <a href={`tel:${hotline.replace(/\s/g, '')}`}>{hotline}</a>
+                    </p>
+                    <p>
+                      Email: <a href={`mailto:${email}`}>{email}</a>
+                    </p>
+                    <p>Website: mihousespa.com</p>
+                  </address>
+                </div>
+              </div>
+
+              <div className="footer__article-item">
+                <div className="footer__nav footer__policy">
+                  <h2 className="footer__title">Danh mục</h2>
+                  <ul className="footer__nav-list">
+                    {FOOTER_MENU.map((item) => (
+                      <li key={item.to} className="footer__nav-item">
+                        <Link className="footer__nav-name hvr-underline" to={item.to}>
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="footer__article-item">
+                <div className="footer__nav footer__policy">
+                  <h2 className="footer__title">Chính sách quy định</h2>
+                  <ul className="footer__nav-list">
+                    {POLICIES.map((item) => (
+                      <li key={item.to} className="footer__nav-item">
+                        <Link className="footer__nav-name hvr-underline" to={item.to}>
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="footer__article-item">
+                <div className="footer__social">
+                  <h2 className="footer__title">Follow us</h2>
+                  <div className="social">
+                    <ul className="social__list">
+                      {socials.length > 0 ? (
+                        socials.map((item) => (
+                          <li key={item.id || item.url} className="social__item">
+                            <a
+                              className="social__item-inner block-normal"
+                              href={item.link || item.url || '#'}
+                              target="_blank"
+                              rel="nofollow"
+                            >
+                              <figure className="social__photo">
+                                <img src={item.url || item.photo} alt={item.name || ''} width="26" height="26" />
+                              </figure>
+                              <span className="social__name">{item.name || item.title}</span>
+                            </a>
+                          </li>
+                        ))
+                      ) : (
+                        <>
+                          <li className="social__item">
+                            <a
+                              className="social__item-inner block-normal"
+                              href="https://www.facebook.com/mihousespa/"
+                              target="_blank"
+                              rel="nofollow"
+                            >
+                              <figure className="social__photo">
+                                <img src="/upload/photo/2026/09/04/fb-1788513580.webp" alt="Facebook" width="26" height="26" />
+                              </figure>
+                              <span className="social__name">Facebook</span>
+                            </a>
+                          </li>
+                          <li className="social__item">
+                            <a
+                              className="social__item-inner block-normal"
+                              href="https://maps.app.goo.gl/FGYh7DnPTGSz6qNc8"
+                              target="_blank"
+                              rel="nofollow"
+                            >
+                              <figure className="social__photo">
+                                <img src="/upload/photo/2026/09/04/ggmap-1788513613.webp" alt="Google Map" width="26" height="26" />
+                              </figure>
+                              <span className="social__name">Google Map</span>
+                            </a>
+                          </li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="mt-4 text-sm leading-relaxed">
-            Mi House Spa tự hào là điểm đến chăm sóc sức khoẻ và làm đẹp hàng đầu với dịch vụ gội đầu dưỡng sinh, massage
-            trị liệu và chăm sóc móng chuyên nghiệp.
-          </p>
-        </div>
+        </section>
 
-        <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Dịch vụ</h4>
-          <ul className="mt-4 space-y-2.5 text-sm">
-            <li><Link to="/dich-vu" className="transition hover:text-brand-400">Gội đầu dưỡng sinh</Link></li>
-            <li><Link to="/dich-vu" className="transition hover:text-brand-400">Massage trị liệu</Link></li>
-            <li><Link to="/dich-vu" className="transition hover:text-brand-400">Chăm sóc móng</Link></li>
-            <li><Link to="/bang-gia" className="transition hover:text-brand-400">Bảng giá</Link></li>
-            <li><Link to="/dao-tao" className="transition hover:text-brand-400">Đào tạo nghề</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Liên kết</h4>
-          <ul className="mt-4 space-y-2.5 text-sm">
-            <li><Link to="/gioi-thieu" className="transition hover:text-brand-400">Về Mi House</Link></li>
-            <li><Link to="/album-anh" className="transition hover:text-brand-400">Album ảnh</Link></li>
-            <li><Link to="/khong-gian" className="transition hover:text-brand-400">Không gian</Link></li>
-            <li><Link to="/tin-tuc" className="transition hover:text-brand-400">Tin tức</Link></li>
-            <li><Link to="/lien-he" className="transition hover:text-brand-400">Liên hệ</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Liên hệ</h4>
-          <ul className="mt-4 space-y-3 text-sm">
-            {settings?.address && (
-              <li className="flex gap-2.5">
-                <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 21s-7-4.35-7-10a7 7 0 1 1 14 0c0 5.65-7 10-7 10Z" />
-                  <circle cx="12" cy="11" r="2.5" />
-                </svg>
-                <span>{settings.address}</span>
-              </li>
-            )}
-            {phone && (
-              <li className="flex gap-2.5">
-                <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" />
-                </svg>
-                <a href={`tel:${phone.replace(/\s/g, '')}`} className="transition hover:text-brand-400">{phone}</a>
-              </li>
-            )}
-            {settings?.email && (
-              <li className="flex gap-2.5">
-                <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="5" width="18" height="14" rx="2" />
-                  <path d="m3 7 9 6 9-6" />
-                </svg>
-                <a href={`mailto:${settings.email}`} className="transition hover:text-brand-400">{settings.email}</a>
-              </li>
-            )}
-            {settings?.fanpage && (
-              <li className="flex gap-2.5">
-                <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3V2Z" />
-                </svg>
-                <a href={settings.fanpage} target="_blank" rel="noreferrer" className="transition hover:text-brand-400">
-                  Facebook
+        <section className="footer__powered">
+          <div className="wrap-content">
+            <div className="footer__copyright">
+              Copyright © <span>Mi House Spa Beauty</span>. <span>All rights reserved.</span>{' '}
+              <span>
+                Designed by{' '}
+                <a href="https://nasani.vn" target="_blank" rel="nofollow">
+                  Nasani.vn
                 </a>
-              </li>
-            )}
-          </ul>
-        </div>
-      </div>
-
-      <div className="border-t border-white/10">
-        <div className="container-site flex flex-col items-center justify-between gap-3 py-5 text-xs text-ink-400 sm:flex-row">
-          <p>© {new Date().getFullYear()} Mi House Spa. Bảo lưu mọi quyền.</p>
-          <div className="flex items-center gap-4">
-            <Link to="/admin/login" className="transition hover:text-brand-400">Quản trị</Link>
-            <Link to="/chinh-sach" className="transition hover:text-brand-400">Chính sách bảo mật</Link>
+              </span>
+            </div>
           </div>
+        </section>
+      </LazyBackground>
+
+      <section className="footer__map">
+        <div className="google-map footer__map-iframe">
+          <iframe
+            src={MAP_SRC}
+            width="600"
+            height="450"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+            title="Bản đồ Mi House Spa"
+          />
         </div>
-      </div>
+      </section>
     </footer>
   );
 }

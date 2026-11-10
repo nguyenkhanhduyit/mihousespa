@@ -1,106 +1,214 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+﻿/* ==========================================================================
+   Mi House Spa — Global theme
+   100% replica stylesheet của http://mihousespa.com/
+   Palette: nâu – be
+   ========================================================================== */
 
-@layer base {
-  html {
-    -webkit-font-smoothing: antialiased;
-    scroll-behavior: smooth;
+/* ---- Font Awesome ---- */
+@import '../../public/assets/fontawesome640/all.css';
+/* ---- Bootstrap purged ---- */
+@import '../../public/assets/bootstrap/bootstrap-purged.css';
+/* ---- Theme core ---- */
+@import '../../public/assets/css/reset.css';
+@import '../../public/assets/css/utility.css';
+@import '../../public/assets/css/prettier.css';
+@import '../../public/assets/css/fonts.css';
+@import '../../public/assets/css/effect.css';
+@import '../../public/assets/css/hvr-animation.css';
+@import '../../public/assets/css/simply-animation.css';
+@import '../../public/assets/css/navigation.css';
+@import '../../public/assets/css/style.css';
+@import '../../public/assets/css/media.css';
+@import '../../public/assets/css/responsive.css';
+@import '../../public/assets/css/scroll-animate.css';
+@import '../../public/assets/css/lazy-embed.css';
+@import '../../public/assets/css/map.css';
+/* ---- Carousel / Lightbox ---- */
+@import '../../public/assets/swiper/swiper-bundle.min.css';
+@import '../../public/assets/splide/splide.min.css';
+@import '../../public/assets/fancybox5/fancybox.min.css';
+
+:root {
+  --theme-brand: #7A431A;
+  --theme-brand-light: #B6602B;
+  --theme-brand-dark: #432D14;
+  --theme-background: #F2E5D6;
+  --theme-accent: #c2000b;
+  --font-title: 'PlayfairDisplay', 'UTM Bebas Neue', serif;
+  --font-base: 'SVN-Gilroy', 'Roboto', sans-serif;
+  --font-subtitle: '1FTVVIPLuneaSans', sans-serif;
+  --font-body: 'SVN-Gilroy', 'Roboto', sans-serif;
+}
+
+/* ---- Tailwind reset guard: keep reference styles winning ---- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ---- Root layout ---- */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main#main-primary {
+  flex: 1 0 auto;
+}
+
+/* ---- React mount helpers ---- */
+.scale-img {
+  overflow: hidden;
+}
+
+.scale-img img {
+  transition: transform 0.8s cubic-bezier(0.2, 0.65, 0.3, 1);
+  will-change: transform;
+}
+
+.scale-img:hover img {
+  transform: scale(1.08);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---- Text split animation (site dùng .text-split + .transition) ---- */
+.text-split {
+  display: inline-block;
+}
+
+.text-split .split-line {
+  display: block;
+  overflow: hidden;
+}
+
+.text-split .split-word {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--split-delay, 0ms);
+}
+
+.text-split.is-visible .split-word {
+  transform: translateY(0);
+}
+
+.text-split .split-line + .split-line {
+  margin-top: 0.02em;
+}
+
+/* ---- Lazy background helper ---- */
+.lazy-background {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ---- Swiper pagination matching reference ---- */
+.swiper-auto .swiper-pagination {
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  z-index: 5;
+}
+
+.swiper-auto .swiper-pagination-bullet {
+  width: 26px;
+  height: 3px;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.45);
+  opacity: 1;
+  margin: 0 !important;
+  transition: background 0.3s ease, width 0.3s ease;
+}
+
+.swiper-auto .swiper-pagination-bullet-active {
+  background: #fff;
+  width: 40px;
+}
+
+/* ---- Splide nav for album featured ---- */
+.splide__slide img {
+  transition: transform 0.7s cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+.splide__slide:hover img {
+  transform: scale(1.08);
+}
+
+/* ---- Click ripple effect (site click feedback) ---- */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.ripple.is-rippling::after {
+  animation: ripple-effect 0.6s ease-out;
+}
+
+@keyframes ripple-effect {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.55;
   }
-  body {
-    @apply bg-white text-ink-900 font-sans;
-  }
-  h1, h2, h3, h4 {
-    @apply font-serif text-ink-900;
-  }
-  /* Ảnh lazy-load: tránh nhảy layout */
-  img.lazy {
-    @apply opacity-0 transition-opacity duration-300;
-  }
-  img.lazy.loaded {
-    @apply opacity-100;
+  100% {
+    width: 320px;
+    height: 320px;
+    opacity: 0;
   }
 }
 
-@layer components {
-  .container-site {
-    @apply mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8;
-  }
+/* ---- Scroll reveal (site scroll-animate) ---- */
+[data-scroll-animate] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold
-           transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60;
-  }
-  .btn-primary {
-    @apply btn bg-brand-600 text-white hover:bg-brand-700 active:scale-[.98] shadow-sm;
-  }
-  .btn-outline {
-    @apply btn border border-brand-600 text-brand-700 hover:bg-brand-600 hover:text-white;
-  }
-  .btn-ghost {
-    @apply btn text-ink-600 hover:bg-ink-50;
-  }
-  .btn-danger {
-    @apply btn bg-red-600 text-white hover:bg-red-700;
-  }
-  .btn-admin {
-    @apply btn rounded-lg bg-ink-900 px-4 py-2 text-white hover:bg-ink-800 active:scale-[.98];
-  }
-  .btn-admin-outline {
-    @apply btn rounded-lg border border-ink-200 bg-white px-4 py-2 text-ink-700 hover:bg-ink-50;
-  }
+[data-scroll-animate].is-in-view {
+  opacity: 1;
+  transform: none;
+}
 
-  .card {
-    @apply rounded-2xl border border-ink-100 bg-white shadow-card;
-  }
-  .card-hover {
-    @apply transition duration-300 hover:-translate-y-1 hover:shadow-card-hover;
-  }
+/* ---- Admin theme: reuse brand palette ---- */
+.admin-shell {
+  --theme-brand: #7A431A;
+  --theme-brand-light: #B6602B;
+  --theme-brand-dark: #432D14;
+  --theme-background: #F2E5D6;
+}
 
-  .field {
-    @apply w-full rounded-lg border border-ink-200 bg-white px-3.5 py-2.5 text-sm text-ink-900
-           placeholder:text-ink-300 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100
-           disabled:bg-ink-50 disabled:text-ink-400;
-  }
-  .label {
-    @apply mb-1.5 block text-sm font-medium text-ink-700;
-  }
-  .hint {
-    @apply mt-1 text-xs text-ink-400;
-  }
-  .error-text {
-    @apply mt-1 text-xs font-medium text-red-600;
-  }
-
-  .admin-table {
-    @apply w-full border-collapse text-sm;
-  }
-  .admin-table thead th {
-    @apply whitespace-nowrap border-b border-ink-200 bg-ink-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-500;
-  }
-  .admin-table tbody td {
-    @apply border-b border-ink-100 px-4 py-3 align-middle;
-  }
-  .admin-table tbody tr:hover {
-    @apply bg-brand-50/40;
-  }
-
-  .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
-  }
-  .badge-green { @apply badge bg-emerald-50 text-emerald-700; }
-  .badge-gray  { @apply badge bg-ink-100 text-ink-600; }
-  .badge-red   { @apply badge bg-red-50 text-red-700; }
-  .badge-amber { @apply badge bg-amber-50 text-amber-700; }
-
-  .skeleton {
-    @apply animate-pulse rounded-lg bg-ink-100;
+/* ---- Loading spinner for admin/API ---- */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-/* Toast animation */
-@keyframes toast-in {
-  from { opacity: 0; transform: translateY(-8px) scale(.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+.spin {
+  animation: spin 0.9s linear infinite;
 }
-.toast-enter { animation: toast-in .22s ease-out; }
+
